@@ -1,0 +1,317 @@
+/* Keep the original dark interface. Brand purple sampled from the TSE logo: #4E2780. */
+:root { --accent: #4e2780; }
+
+/* Crop the transparent logo's built-in padding to fit the dark header. */
+.topbar .brand { gap: 14px; min-width: 0; letter-spacing: 0; }
+.brand-logo { display: block; position: relative; flex: none; width: 83px; height: 41px; overflow: hidden; }
+.brand-logo img { position: absolute; display: block; width: 96px; height: 96px; max-width: none; left: -7px; top: -28px; }
+.brand-title { display: block; min-width: 0; color: var(--text); font-size: clamp(12px, 1.15vw, 17px); font-weight: 600; letter-spacing: .1px; line-height: 1.25; white-space: normal; }
+
+/* Move only the illustration; the draw controls remain still. */
+.orbital-art .globe-motion { transform-box: view-box; transform-origin: 290px 140px; animation: globe-turn 48s linear infinite; }
+.orbital-art .satellite-motion { animation: satellite-drift 5.5s ease-in-out infinite; }
+@keyframes globe-turn { to { transform: rotate(360deg); } }
+@keyframes satellite-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(6px, -5px); } }
+@media (prefers-reduced-motion: reduce) { .orbital-art .globe-motion, .orbital-art .satellite-motion { animation: none; } }
+
+/* Use the exact purple as a fill or border. Light text keeps small labels readable. */
+.icon-button:hover, .text-button:hover:not(:disabled) { color: #d1b9e5; }
+.eyebrow { color: #c9b4dc; }
+h1 em { color: #d5bde8; text-shadow: 0 0 20px rgba(78,39,128,.48); }
+.range-value:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(78,39,128,.3); }
+.range-value input[aria-invalid="true"], .range-error { color: #d5bde8; }
+.launch-button, .primary-button { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 4px 18px rgba(78,39,128,.3); }
+.launch-button:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 4px 26px rgba(78,39,128,.5); }
+.launch-button:disabled { background: #5c5465; border-color: #5c5465; color: #d8d2dd; }
+.is-spinning .reel { border-color: var(--accent); box-shadow: 0 0 18px rgba(78,39,128,.3); }
+.is-spinning .orbit-two { border-color: rgba(78,39,128,.55); }
+.is-spinning .stage-label, .has-winner .stage-label, .has-winner .draw-announcement { color: #d5bde8; }
+.has-winner .reel { border-color: var(--accent); color: #e0cfed; box-shadow: 0 0 24px rgba(78,39,128,.38); }
+.has-winner .corner { border-color: #8e6aab; }
+.reel { color: #d7c7e3; }
+.pool-stats > div:first-child .mono { color: #d5bde8; }
+.winner-card.latest { border-color: rgba(78,39,128,.85); background: linear-gradient(145deg, #281e35, #182028); }
+.winner-card.latest .winner-card-top, .winner-card .latest-label, .latest .winner-number { color: #d5bde8; }
+.dialog-symbol { color: #d5bde8; }
+.toast { border-color: var(--accent); color: #e0cfed; }
+
+@media (max-width: 760px) {
+  .topbar { display: grid; grid-template-columns: 1fr auto; grid-template-rows: 56px 43px; column-gap: 0; row-gap: 0; height: auto; min-height: 99px; padding: 0 24px; }
+  .topbar .brand { grid-column: 1 / -1; grid-row: 1; align-self: center; }
+  .topbar .header-actions { grid-column: 2; grid-row: 2; align-self: center; margin-left: 0; }
+  .brand-title { font-size: 13px; }
+}
+@media (max-width: 520px) {
+  .topbar { grid-template-rows: 54px 42px; min-height: 96px; padding: 0 18px; }
+  .topbar .brand { gap: 9px; }
+  .brand-logo { width: 69px; height: 35px; }
+  .brand-logo img { width: 80px; height: 80px; left: -5px; top: -23px; }
+  .brand-title { font-size: 11.5px; max-width: calc(100vw - 117px); line-height: 1.2; }
+}
+
+/* Settings are available from the small gear at the right of the header. */
+.topbar .header-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.header-settings-button { flex: none; width: 34px; height: 34px; border: 1px solid #394454; background: #151e29; color: #d5bde8; }
+.header-settings-button:hover { border-color: var(--accent); background: #241a32; color: #e5d5ef; }
+.header-settings-button[aria-expanded="true"] { border-color: var(--accent); background: #2b1c3b; color: #fff; }
+.console-layout { display: block; margin-block: 28px 34px; }
+.draw-panel { position: relative; min-height: 87vh; min-height: 87svh; }
+.draw-panel .draw-panel-heading { height: auto; min-height: 72px; padding: 16px 24px; }
+.draw-panel .draw-stage { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.draw-panel .draw-panel-heading h2 { font-size: clamp(19px, 1.9vw, 26px); }
+.draw-panel .stage-label { font-size: clamp(11px, 1vw, 14px); letter-spacing: 1.8px; }
+.draw-panel .draw-announcement { font-size: clamp(13px, 1.1vw, 16px); }
+.draw-panel .range-line { font-size: clamp(10px, .85vw, 13px); }
+.draw-panel .range-line strong { font-size: clamp(11px, .95vw, 14px); }
+.draw-panel .launch-button { min-height: 58px; font-size: clamp(16px, 1.3vw, 19px); }
+.draw-panel .keyboard-hint { font-size: 12px; }
+.draw-panel .keyboard-hint kbd { font-size: 11px; }
+.draw-panel .launch-area { position: relative; z-index: 3; }
+.draw-panel .signal-sequence { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; overflow: hidden; pointer-events: none; visibility: hidden; opacity: 0; }
+.draw-panel.is-preparing .signal-sequence { visibility: visible; opacity: 1; }
+.draw-panel.is-signal-fading .signal-sequence { visibility: visible; animation: signal-fade 800ms ease-in forwards; }
+
+/* Signal beam — thicker core with bright outer glow */
+.signal-sequence .signal-beam { fill: none; stroke: #e2baff; stroke-width: 3; stroke-linecap: round; stroke-dasharray: var(--beam-length); stroke-dashoffset: var(--beam-length); filter: drop-shadow(0 0 8px #b98ee3) drop-shadow(0 0 18px #7b52b060); }
+.is-preparing .signal-beam { animation: signal-trace 630ms ease-out 420ms forwards, signal-vanish 1ms linear 1060ms forwards; }
+.is-signal-fading .signal-beam { stroke-dashoffset: 0; opacity: 0; }
+
+/* Impact target ring */
+.signal-sequence .signal-target { fill: #e2baff; stroke: #e2baff; stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; filter: drop-shadow(0 0 14px #b98ee3) drop-shadow(0 0 28px #7b52b080); }
+.is-preparing .signal-target { animation: signal-impact 120ms ease-out 1050ms both; }
+
+/* Satellite */
+.signal-sequence .signal-satellite { color: #d8b6f1; fill: none; stroke: currentColor; stroke-width: 1.5; filter: drop-shadow(0 0 10px #b98ee3); }
+.is-preparing .signal-satellite { animation: signal-arrive 500ms ease-out both; }
+
+/* Radio-wave pings radiating from the satellite */
+.signal-sequence .signal-ping { fill: none; stroke: #d5bde8; stroke-width: 1.2; opacity: 0; }
+.is-preparing .signal-ping { animation: ping-expand 900ms ease-out forwards; }
+.is-preparing .ping-1 { animation-delay: 500ms; }
+.is-preparing .ping-2 { animation-delay: 700ms; }
+.is-preparing .ping-3 { animation-delay: 900ms; }
+
+/* Shockwave ring that expands out from the number display on beam impact */
+.impact-shockwave {
+  position: absolute;
+  left: 50%; top: 48%;
+  width: 0; height: 0;
+  border-radius: 50%;
+  border: 2px solid #d5bde8;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Signal keyframes */
+@keyframes signal-arrive { from { opacity: 0; transform: translate(-30px, -12px) rotate(-16deg); } to { opacity: 1; transform: translate(0, 0) rotate(0); } }
+@keyframes signal-trace { to { stroke-dashoffset: 0; } }
+@keyframes signal-vanish { to { opacity: 0; } }
+@keyframes signal-impact { 0% { opacity: 0; transform: scale(.25); } 45% { opacity: 1; } 100% { opacity: 0; transform: scale(4); } }
+@keyframes signal-fade { from { opacity: 1; } to { opacity: 0; } }
+@keyframes ping-expand { 0% { opacity: .8; r: 8; } 100% { opacity: 0; r: 48; } }
+
+/* ─── Ambient life ─── */
+
+/* Slow radar sweep inside the draw stage */
+.draw-stage::before {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(78,39,128,.07) 25deg, transparent 50deg);
+  animation: radar-sweep-scan 8s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient orbit rotation */
+.orbit-one { animation: orbit-drift 60s linear infinite; }
+.orbit-two { animation: orbit-drift 45s linear infinite reverse; }
+@keyframes orbit-drift { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+/* Beacon pulse on the connection indicator */
+.connection i {
+  animation: beacon-ping 2.5s ease-in-out infinite;
+}
+@keyframes beacon-ping {
+  0%, 100% { box-shadow: 0 0 9px #95bcb040; transform: scale(1); }
+  50% { box-shadow: 0 0 14px #95bcb080, 0 0 22px #95bcb030; transform: scale(1.3); }
+}
+
+/* Launch button hover micro-interaction */
+.launch-button { transition: background .2s, transform .2s, box-shadow .2s; }
+.launch-button:hover:not(:disabled) {
+  box-shadow: 0 4px 28px rgba(78,39,128,.55), 0 0 40px rgba(78,39,128,.2);
+  transform: translateY(-2px);
+}
+.launch-button:hover:not(:disabled) svg { animation: icon-tilt .4s ease-in-out; }
+@keyframes icon-tilt { 0% { transform: rotate(0); } 50% { transform: rotate(-12deg); } 100% { transform: rotate(0); } }
+
+/* Subtle glow pulse on the reels during spinning */
+.is-spinning .reel { animation: reel-glow 1.2s ease-in-out infinite alternate; }
+@keyframes reel-glow {
+  from { box-shadow: 0 0 18px rgba(78,39,128,.3); }
+  to   { box-shadow: 0 0 28px rgba(78,39,128,.55), inset 0 0 12px rgba(78,39,128,.1); }
+}
+
+/* Winner reveal pop */
+.has-winner .reel { animation: winner-pop .5s cubic-bezier(.22,1.5,.36,1) both; }
+@keyframes winner-pop {
+  0%   { transform: scale(.92); opacity: .7; }
+  60%  { transform: scale(1.04); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Latest winner card slide-in */
+.winner-card.latest { animation: card-enter .5s cubic-bezier(.22,.61,.36,1) both; }
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(16px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Gentle stage-grid shimmer */
+.stage-grid {
+  animation: grid-shimmer 6s ease-in-out infinite alternate;
+}
+@keyframes grid-shimmer {
+  0%   { opacity: 1; }
+  100% { opacity: .5; }
+}
+
+/* Radar sweep keyframe */
+@keyframes radar-sweep-scan { to { transform: rotate(360deg); } }
+
+/* ─── Floating space objects ─── */
+
+.space-objects, .history-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.history-section { position: relative; }
+
+/* Twinkling stars — small glowing dots */
+.space-star {
+  position: absolute;
+  width: 3px; height: 3px;
+  background: #d5bde8;
+  border-radius: 50%;
+  animation: star-twinkle 3s ease-in-out infinite alternate;
+}
+.space-star::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: inherit;
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+/* Draw stage stars — positions */
+.s1 { top: 12%; left: 8%;  animation-delay: 0s;   }
+.s2 { top: 18%; right: 6%; animation-delay: 1.2s; }
+.s3 { top: 68%; left: 5%;  animation-delay: 0.6s; }
+.s4 { top: 75%; right: 9%; animation-delay: 2s;   }
+.s5 { top: 30%; left: 15%; animation-delay: 0.3s; width: 2px; height: 2px; }
+.s6 { top: 85%; left: 20%; animation-delay: 1.5s; width: 2px; height: 2px; background: #b98ee3; }
+.s7 { top: 22%; right: 15%; animation-delay: 0.9s; }
+.s8 { top: 60%; right: 18%; animation-delay: 1.8s; width: 2px; height: 2px; background: #95bcb0; }
+
+/* Small constellation dots */
+.space-dot {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: #657c85;
+  border-radius: 50%;
+  animation: dot-drift 12s ease-in-out infinite alternate;
+}
+.d1 { top: 40%; left: 3%;  animation-delay: 0s;   }
+.d2 { top: 55%; right: 4%; animation-delay: 3s;   }
+.d3 { top: 15%; left: 45%; animation-delay: 1.5s; }
+.d4 { top: 90%; left: 35%; animation-delay: 4s;   }
+.d5 { top: 48%; right: 25%; animation-delay: 2s;  }
+
+/* Small orbit rings */
+.space-ring {
+  position: absolute;
+  width: 16px; height: 16px;
+  border: 1px solid #4e278040;
+  border-radius: 50%;
+  animation: ring-pulse 5s ease-in-out infinite alternate;
+}
+.space-ring::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 3px; height: 3px;
+  background: #7b52b0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.r1 { top: 45%; left: 2%;  animation-delay: 0s; }
+.r2 { top: 25%; right: 3%; animation-delay: 2.5s; }
+
+/* History section stars — positions */
+.hs1 { top: 15%; left: 2%;   animation-delay: 0.4s; }
+.hs2 { top: 30%; right: 3%;  animation-delay: 1.6s; }
+.hs3 { top: 60%; left: 5%;   animation-delay: 0.8s; width: 2px; height: 2px; }
+.hs4 { top: 45%; right: 8%;  animation-delay: 2.2s; width: 2px; height: 2px; background: #95bcb0; }
+.hs5 { top: 75%; left: 10%;  animation-delay: 1.1s; }
+.hs6 { top: 20%; right: 15%; animation-delay: 0.5s; width: 2px; height: 2px; background: #b98ee3; }
+.hd1 { top: 50%; left: 1%;   animation-delay: 2s; }
+.hd2 { top: 80%; right: 5%;  animation-delay: 3.5s; }
+.hd3 { top: 35%; left: 40%;  animation-delay: 1s; }
+
+@keyframes star-twinkle {
+  0%   { opacity: .2; transform: scale(.7); }
+  50%  { opacity: 1;  transform: scale(1.2); }
+  100% { opacity: .4; transform: scale(.9); }
+}
+@keyframes dot-drift {
+  0%   { opacity: .3; transform: translateY(0); }
+  100% { opacity: .7; transform: translateY(-6px); }
+}
+@keyframes ring-pulse {
+  0%   { opacity: .3; transform: scale(.8); }
+  100% { opacity: .7; transform: scale(1.15); }
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .is-preparing .signal-sequence,
+  .is-preparing .signal-ping,
+  .is-signal-fading .signal-sequence,
+  .draw-stage::before,
+  .orbit-one, .orbit-two,
+  .connection i,
+  .launch-button svg,
+  .is-spinning .reel,
+  .has-winner .reel,
+  .winner-card.latest,
+  .space-star, .space-dot, .space-ring,
+  .stage-grid { animation: none !important; }
+}
+.settings-dialog { width: min(400px, calc(100% - 24px)); max-width: none; max-height: calc(100dvh - 24px); padding: 0; overflow: auto; border: 0; background: transparent; box-shadow: 0 24px 80px #0008; }
+.settings-dialog .parameters { width: 100%; }
+.settings-dialog .range-setting { display: flex; }
+.settings-dialog .winners-setting { margin-top: 22px; }
+.settings-dialog .winners-setting .range-value { margin-top: 10px; }
+.settings-dialog .winner-target { color: #889aa8; font-size: 12px; letter-spacing: 0; }
+.settings-dialog .parameter-body { display: block; padding: 22px; }
+.settings-dialog .duration-setting { margin-top: 22px; }
+.settings-dialog .pool-stats { display: grid; grid-template-columns: 1fr 1fr; margin-top: 23px; padding-top: 19px; border-top: 1px solid #273540; }
+.settings-dialog .pool-stats > div:first-child { padding-left: 0; border-left: 0; }
+.settings-dialog .pool-stats > div + div { padding-left: 25px; border-left: 1px solid #293540; }
+@media (max-width: 760px) {
+  .topbar .header-brand { grid-column: 1 / -1; grid-row: 1; align-self: center; }
+}
+@media (max-width: 520px) {
+  .header-settings-button { width: 30px; height: 30px; }
+  .orbital-art { opacity: .42; }
+  .console-layout { margin-block: 22px 28px; }
+  .draw-panel .draw-panel-heading { min-height: 64px; padding: 14px 18px; }
+}

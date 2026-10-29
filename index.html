@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1118">
+  <meta name="description" content="A prize draw with a customizable number range, unique winners, result history, and fullscreen mode.">
+  <title>Prize Draw — Number Selection</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./theme.css">
+  <script src="./draw-engine.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="11" ry="5" transform="rotate(-40 12 12)"/><path d="M19 3v4M17 5h4"/></symbol>
+    <symbol id="i-satellite" viewBox="0 0 24 24"><path d="m9 8 7 7-4 4-7-7 4-4Z M7 6 4 3 1 6l3 3m11 8 3 3 3-3-3-3M14 3a7 7 0 0 1 7 7m-7-3a3 3 0 0 1 3 3M10 14l-4 4m-3 0 3 3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4V4Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-muted" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4V4Zm5 5 5 6m0-6-5 6"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1 7M3 4v6h6"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 0 1-10 0V3Zm0 2H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4m-5 2v6m-4 1h8"/></symbol>
+    <symbol id="i-signal" viewBox="0 0 24 24"><path d="M4 20v-4m5 4v-8m5 8V8m5 12V4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2 8 3v6c0 5-8 11-8 11S4 16 4 11V5l8-3Z m-4 9 3 3 5-6"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M10 2h4l.5 2.2 1.5.6 2-.9 2.8 2.8-.9 2  .6 1.5L22 10v4l-2.2.5-.6 1.5.9 2-2.8 2.8-2-.9-1.5.6L14 22h-4l-.5-2.2-1.5-.6-2 .9-2.8-2.8.9-2-.6-1.5L2 14v-4l2.2-.5.6-1.5-.9-2 2.8-2.8 2 .9 1.5-.6L10 2Z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="header-brand"><a class="brand" href="#" aria-label="Telecommunications and Satellite Engineering home"><span class="brand-logo"><img src="./assets/tse-logo.png" alt=""></span><span class="brand-title">Telecommunications and Satellite Engineering</span></a></div>
+    <div class="header-actions"><span class="connection"><i></i> READY</span><span class="header-separator"></span><button id="sound-button" class="icon-button" aria-label="Turn sound on" aria-pressed="false" title="Turn sound on"><svg><use href="#i-muted"/></svg></button><button id="fullscreen-button" class="icon-button" aria-label="Enter fullscreen" title="Enter fullscreen"><svg><use href="#i-expand"/></svg></button><button id="settings-button" class="icon-button header-settings-button" type="button" aria-label="Open draw settings" aria-haspopup="dialog" aria-controls="settings-dialog" aria-expanded="false" title="Draw settings"><svg><use href="#i-gear"/></svg></button></div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div class="intro-copy"><p class="eyebrow"><span></span> PRIZE DRAW</p><h1 id="page-title">Who will be<br>The lucky <em>winner?</em></h1><p class="intro-description"><span id="intro-pool-size">500</span> numbers in the pool. Previous winners are excluded.<br>Set the range, then start the draw.</p></div>
+      <div class="orbital-art" aria-hidden="true">
+        <svg viewBox="0 0 540 270" fill="none">
+          <defs><radialGradient id="planet-fill" cx=".3" cy=".25" r=".8"><stop stop-color="#29404a"/><stop offset=".6" stop-color="#182934"/><stop offset="1" stop-color="#0c141d"/></radialGradient><linearGradient id="orbit-line"><stop stop-color="#5b7782" stop-opacity=".08"/><stop offset=".5" stop-color="#5b7782" stop-opacity=".75"/><stop offset="1" stop-color="#5b7782" stop-opacity=".12"/></linearGradient><clipPath id="planet-clip"><circle cx="290" cy="140" r="90"/></clipPath></defs>
+          <path d="M20 140h490M290 15v250" stroke="#405660" stroke-dasharray="2 7" opacity=".5"/>
+          <circle cx="290" cy="140" r="118" stroke="#48616d" stroke-dasharray="2 8"/>
+          <g class="globe-motion">
+            <circle cx="290" cy="140" r="90" fill="url(#planet-fill)" stroke="#6c8791"/>
+            <g clip-path="url(#planet-clip)" stroke="#6c8791" stroke-width=".7"><ellipse cx="290" cy="140" rx="29" ry="90"/><ellipse cx="290" cy="140" rx="64" ry="90"/><path d="M200 140h180M211 97h158M211 183h158M231 69h118M231 211h118"/><path d="m237 80 20-7 12 8-4 15 17 9-8 19-15 1-8 22-21-6-9-17 9-11-5-15Zm48 61 20-13 17 8 5 17-10 10-4 23-16 22-8-9 5-20-15-15Zm29-59 25 5 27 22-9 16-20-3-7-13-14-4-7-13" fill="#6c8791" fill-opacity=".28"/></g>
+          </g>
+          <ellipse cx="290" cy="140" rx="207" ry="67" transform="rotate(-26 290 140)" stroke="url(#orbit-line)"/><ellipse cx="290" cy="140" rx="147" ry="113" transform="rotate(30 290 140)" stroke="#6c8791" stroke-dasharray="4 7" opacity=".7"/>
+          <path d="m169 80 98 49" stroke="#e2baff" stroke-dasharray="3 5" opacity=".95"/><circle cx="267" cy="129" r="3" fill="#e2baff"/><circle cx="267" cy="129" r="8" stroke="#e2baff" opacity=".8"/>
+          <g class="satellite-motion"><g transform="translate(164 77) rotate(-28)" stroke="#a9b7bc" stroke-width="1.2"><rect x="-10" y="-12" width="20" height="24" rx="3" fill="#22313a"/><path d="M-10-5h-11m31 0h11"/><rect x="-49" y="-17" width="28" height="24" fill="#243846"/><rect x="21" y="-17" width="28" height="24" fill="#243846"/><path d="M-40-17V7m10-24V7m60-24V7m10-24V7m-89-12h28m42 0h28" stroke="#67838d"/><path d="M-7 12a7 7 0 0 0 14 0M0 19v8m-4 0h8M0-12v-8"/><circle cy="-22" r="2" fill="#67838d" stroke="none"/></g></g>
+          <circle cx="433" cy="64" r="3" fill="#e2baff"/><circle cx="433" cy="64" r="9" stroke="#e2baff" opacity=".7"/><path d="M440 62h42" stroke="#e2baff"/>
+          <path d="M160 200h38l25-30" stroke="#405660"/>
+          <g fill="#657c85"><circle cx="91" cy="120" r="1.5"/><circle cx="383" cy="23" r="1.5"/><circle cx="481" cy="182" r="1.5"/><path d="M101 33v6m-3-3h6M431 220v6m-3-3h6" stroke="#657c85"/></g>
+        </svg>
+      </div>
+      <div class="intro-corner mono">NUMBER RANGE <span>001 / <span id="intro-end-range">500</span></span></div>
+    </section>
+
+    <div class="console-layout" id="console">
+      <section class="draw-panel panel" aria-labelledby="draw-heading">
+        <div class="panel-heading draw-panel-heading"><h2 id="draw-heading">TSE Lucky Price Draw</h2></div>
+        <svg class="signal-sequence" id="signal-sequence" aria-hidden="true" focusable="false"><path class="signal-beam"/><circle class="signal-target" r="10"/><g id="signal-satellite-position"><g class="signal-satellite"><use href="#i-satellite" x="-34" y="-34" width="68" height="68"/></g><circle class="signal-ping ping-1" r="8"/><circle class="signal-ping ping-2" r="8"/><circle class="signal-ping ping-3" r="8"/></g></svg>
+        <div class="draw-stage" id="draw-stage">
+          <div class="stage-grid" aria-hidden="true"></div><div class="radar-orbit orbit-one" aria-hidden="true"></div><div class="radar-orbit orbit-two" aria-hidden="true"></div>
+          <!-- Floating space objects -->
+          <div class="space-objects" aria-hidden="true">
+            <span class="space-star s1"></span><span class="space-star s2"></span><span class="space-star s3"></span>
+            <span class="space-star s4"></span><span class="space-star s5"></span><span class="space-star s6"></span>
+            <span class="space-star s7"></span><span class="space-star s8"></span>
+            <span class="space-dot d1"></span><span class="space-dot d2"></span><span class="space-dot d3"></span>
+            <span class="space-dot d4"></span><span class="space-dot d5"></span>
+            <span class="space-ring r1"></span><span class="space-ring r2"></span>
+          </div>
+          <!-- Shockwave ring on beam impact -->
+          <div class="impact-shockwave" aria-hidden="true"></div>
+          <span class="corner corner-tl" aria-hidden="true"></span><span class="corner corner-tr" aria-hidden="true"></span><span class="corner corner-bl" aria-hidden="true"></span><span class="corner corner-br" aria-hidden="true"></span>
+          <div class="stage-label mono" id="stage-label"><span class="tiny-cross">+</span> READY TO DRAW <span class="tiny-cross">+</span></div>
+          <div class="number-display" aria-hidden="true"><div class="reel"><div class="reel-strip"><span>–</span></div></div><span class="digit-divider"></span><div class="reel"><div class="reel-strip"><span>–</span></div></div><span class="digit-divider"></span><div class="reel"><div class="reel-strip"><span>–</span></div></div></div>
+          <p id="draw-announcement" class="draw-announcement" role="status" aria-live="polite">Press Start draw to select a number.</p>
+          <div class="range-line mono"><span class="range-dot"></span> NUMBER RANGE <strong>001 <span>—</span> <span id="stage-end-range">500</span></strong><span class="range-dot"></span></div>
+          <canvas id="confetti" aria-hidden="true"></canvas>
+        </div>
+        <div class="launch-area"><button class="launch-button" id="spin-button"><svg><use href="#i-satellite"/></svg><span id="spin-label">Start draw</span><svg class="launch-arrow"><use href="#i-arrow"/></svg></button><span class="keyboard-hint">or press <kbd>space</kbd> to start</span></div>
+        <div class="draw-bottom"></div>
+      </section>
+
+    </div>
+
+    <section id="history" class="history-section" aria-labelledby="history-heading">
+      <!-- Space decorations around winner cards -->
+      <div class="history-stars" aria-hidden="true">
+        <span class="space-star hs1"></span><span class="space-star hs2"></span><span class="space-star hs3"></span>
+        <span class="space-star hs4"></span><span class="space-star hs5"></span><span class="space-star hs6"></span>
+        <span class="space-dot hd1"></span><span class="space-dot hd2"></span><span class="space-dot hd3"></span>
+      </div>
+      <div class="history-heading"><div><h2 id="history-heading"><svg><use href="#i-cup"/></svg> Winners <span id="history-count">0</span></h2><p>Numbers selected during this session.</p></div><div class="history-actions"><button id="export-button" class="text-button" disabled><svg><use href="#i-download"/></svg> Export results</button><button id="reset-button" class="text-button" disabled><svg><use href="#i-reset"/></svg> Reset session</button></div></div>
+      <div class="history-empty" id="history-empty"><div class="empty-orbit"><svg><use href="#i-orbit"/></svg></div><p>No winners yet. <span>Start the draw to select the first number.</span></p><span class="mono empty-code">NO RESULTS</span></div>
+      <ol class="winner-grid" id="winner-list" aria-label="Winners, newest first" hidden></ol>
+    </section>
+
+    <footer><span class="footer-brand"><svg><use href="#i-orbit"/></svg> TELECOMMUNICATIONS & SATELLITE ENGINEERING</span><span class="mono"><span class="footer-dot"></span> LOCAL SESSION <span class="footer-slash">/</span> PRIZE DRAW</span></footer>
+  </main>
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title"><section class="parameters panel"><div class="panel-heading"><h2 id="settings-title">Draw settings</h2><button id="close-settings" class="icon-button" type="button" aria-label="Close draw settings"><svg><use href="#i-close"/></svg></button></div><div class="parameter-body">
+    <div class="range-setting"><label class="field-label" for="end-range">Number range</label><span class="micro mono">END: 1–9999</span><div class="range-value mono"><span>001</span><span class="range-connector">→</span><input id="end-range" type="number" inputmode="numeric" min="1" max="9999" step="1" value="500" aria-label="End number" aria-describedby="range-hint range-error"></div><p class="range-hint" id="range-hint">Press Enter or click away to apply.</p><p class="range-error" id="range-error" role="alert" hidden></p></div>
+    <div class="winners-setting"><label class="field-label" for="winner-limit">Number of Winners per session</label><div class="range-value mono"><span>MAX</span><input id="winner-limit" type="number" inputmode="numeric" min="1" max="500" step="1" value="500" aria-describedby="winner-limit-hint winner-limit-error"></div><p class="range-hint" id="winner-limit-hint">Choose from 1 to 500.</p><p class="range-error" id="winner-limit-error" role="alert" hidden></p></div>
+    <div class="duration-setting"><label for="duration">Spin duration</label><div class="select-wrap"><select id="duration"><option value="3">3 seconds · Quick</option><option value="5" selected>5 seconds · Standard</option><option value="8">8 seconds · Extended</option></select><span aria-hidden="true">⌄</span></div></div>
+    <div class="pool-stats"><div><span class="mono" id="remaining-count">500</span><p>Numbers in pool</p></div><div><span class="mono" id="winner-count">00</span><span class="winner-target mono"> / <span id="winner-limit-readout">500</span></span><p>Winners drawn</p></div></div>
+  </div></section></dialog>
+  <dialog id="reset-dialog" aria-labelledby="reset-title"><button id="close-dialog" class="icon-button dialog-close" aria-label="Close"><svg><use href="#i-close"/></svg></button><div class="dialog-symbol"><svg><use href="#i-reset"/></svg></div><h2 id="reset-title">Reset this session?</h2><p>This clears the winner history and puts all <span id="reset-pool-size">500</span> numbers back in the pool. Export your results first if you’d like to keep them.</p><div class="dialog-actions"><button id="cancel-reset" class="secondary-button" autofocus>Keep this session</button><button id="confirm-reset" class="primary-button">Reset session</button></div></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>
