@@ -36,17 +36,28 @@ h1 em { color: #d5bde8; text-shadow: 0 0 20px rgba(78,39,128,.48); }
 .toast { border-color: var(--accent); color: #e0cfed; }
 
 @media (max-width: 760px) {
-  .topbar { display: grid; grid-template-columns: 1fr auto; grid-template-rows: 56px 43px; column-gap: 0; row-gap: 0; height: auto; min-height: 99px; padding: 0 24px; }
-  .topbar .brand { grid-column: 1 / -1; grid-row: 1; align-self: center; }
-  .topbar .header-actions { grid-column: 2; grid-row: 2; align-self: center; margin-left: 0; }
+  .topbar { display: flex; align-items: center; height: 76px; min-height: 76px; gap: 12px; padding: 0 24px; }
+  .topbar .header-brand { flex: 1; min-width: 0; }
+  .topbar .header-actions { flex: none; margin-left: auto; }
   .brand-title { font-size: 13px; }
+  .brand-title-line { display: block; }
 }
 @media (max-width: 520px) {
-  .topbar { grid-template-rows: 54px 42px; min-height: 96px; padding: 0 18px; }
+  .topbar { height: 68px; min-height: 68px; padding: 0 12px; gap: 6px; }
   .topbar .brand { gap: 9px; }
   .brand-logo { width: 69px; height: 35px; }
   .brand-logo img { width: 80px; height: 80px; left: -5px; top: -23px; }
-  .brand-title { font-size: 11.5px; max-width: calc(100vw - 117px); line-height: 1.2; }
+  .brand-title { font-size: 11.5px; line-height: 1.2; }
+}
+@media (max-width: 360px) {
+  .topbar { padding: 0 10px; gap: 4px; }
+  .topbar .brand { gap: 6px; }
+  .brand-logo { width: 54px; height: 30px; }
+  .brand-logo img { width: 64px; height: 64px; left: -4px; top: -17px; }
+  .brand-title { font-size: 10px; line-height: 1.15; }
+  .topbar .header-actions { gap: 0; }
+  .topbar .header-actions .icon-button { width: 24px; }
+  .topbar .header-actions .header-settings-button { width: 28px; height: 28px; }
 }
 
 /* Settings are available from the small gear at the right of the header. */
@@ -306,9 +317,6 @@ h1 em { color: #d5bde8; text-shadow: 0 0 20px rgba(78,39,128,.48); }
 .settings-dialog .pool-stats { display: grid; grid-template-columns: 1fr 1fr; margin-top: 23px; padding-top: 19px; border-top: 1px solid #273540; }
 .settings-dialog .pool-stats > div:first-child { padding-left: 0; border-left: 0; }
 .settings-dialog .pool-stats > div + div { padding-left: 25px; border-left: 1px solid #293540; }
-@media (max-width: 760px) {
-  .topbar .header-brand { grid-column: 1 / -1; grid-row: 1; align-self: center; }
-}
 @media (max-width: 520px) {
   .header-settings-button { width: 30px; height: 30px; }
   .orbital-art { opacity: .42; }
