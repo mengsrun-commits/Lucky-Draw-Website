@@ -111,31 +111,40 @@ function renderHistory() {
 function renderControls() {
   const pool = availableNumbers(state.winners, state.endRange);
   const limitReached = state.winners.length >= state.winnerLimit;
-  $('#end-range').value = state.endRange;
-  $('#end-range').disabled = spinning;
-  $('#winner-limit').value = state.winnerLimit;
-  $('#winner-limit').max = state.endRange;
-  $('#winner-limit').disabled = spinning;
-  $('#winner-limit-hint').textContent = `Choose from ${Math.max(1, state.winners.length)} to ${state.endRange.toLocaleString()}.`;
-  $('#winner-limit-readout').textContent = state.winnerLimit.toLocaleString();
-  $('#intro-pool-size').textContent = state.endRange.toLocaleString();
-  $('#intro-end-range').textContent = pad(state.endRange);
-  $('#stage-end-range').textContent = pad(state.endRange);
-  $('#reset-pool-size').textContent = state.endRange.toLocaleString();
-  $('#remaining-count').textContent = pool.length;
-  $('#winner-count').textContent = String(state.winners.length).padStart(2, '0');
-  $('#history-count').textContent = state.winners.length;
-  $('#duration').value = state.duration;
-  $('#duration').disabled = spinning;
-  $('#reset-button').disabled = spinning || !state.winners.length;
-  $('#export-button').disabled = !state.winners.length;
-  spinButton.disabled = spinning || !pool.length || limitReached;
-  $('#spin-label').textContent = preparing ? 'Preparing draw…' : spinning ? 'Drawing…' : limitReached ? 'Session complete' : !pool.length ? `All ${state.endRange.toLocaleString()} numbers drawn` : state.winners.length ? 'Start next draw' : 'Start draw';
-  $('#sound-button').setAttribute('aria-pressed', String(state.sound));
-  const soundLabel = state.sound ? 'Turn sound off' : 'Turn sound on';
-  $('#sound-button').setAttribute('aria-label', soundLabel);
-  $('#sound-button').title = soundLabel;
-  $('#sound-button use').setAttribute('href', state.sound ? '#i-volume' : '#i-muted');
+  if ($('#end-range')) {
+    $('#end-range').value = state.endRange;
+    $('#end-range').disabled = spinning;
+  }
+  if ($('#winner-limit')) {
+    $('#winner-limit').value = state.winnerLimit;
+    $('#winner-limit').max = state.endRange;
+    $('#winner-limit').disabled = spinning;
+  }
+  if ($('#winner-limit-hint')) $('#winner-limit-hint').textContent = `Choose from ${Math.max(1, state.winners.length)} to ${state.endRange.toLocaleString()}.`;
+  if ($('#winner-limit-readout')) $('#winner-limit-readout').textContent = state.winnerLimit.toLocaleString();
+  if ($('#intro-pool-size')) $('#intro-pool-size').textContent = state.endRange.toLocaleString();
+  if ($('#intro-end-range')) $('#intro-end-range').textContent = pad(state.endRange);
+  if ($('#stage-end-range')) $('#stage-end-range').textContent = pad(state.endRange);
+  if ($('#reset-pool-size')) $('#reset-pool-size').textContent = state.endRange.toLocaleString();
+  if ($('#remaining-count')) $('#remaining-count').textContent = pool.length;
+  if ($('#winner-count')) $('#winner-count').textContent = String(state.winners.length).padStart(2, '0');
+  if ($('#history-count')) $('#history-count').textContent = state.winners.length;
+  if ($('#duration')) {
+    $('#duration').value = state.duration;
+    $('#duration').disabled = spinning;
+  }
+  if ($('#reset-button')) $('#reset-button').disabled = spinning || !state.winners.length;
+  if ($('#export-button')) $('#export-button').disabled = !state.winners.length;
+  if (spinButton) spinButton.disabled = spinning || !pool.length || limitReached;
+  if ($('#spin-label')) $('#spin-label').textContent = preparing ? 'Preparing draw…' : spinning ? 'Drawing…' : limitReached ? 'Session complete' : !pool.length ? `All ${state.endRange.toLocaleString()} numbers drawn` : state.winners.length ? 'Start next draw' : 'Start draw';
+  if ($('#sound-button')) {
+    $('#sound-button').setAttribute('aria-pressed', String(state.sound));
+    const soundLabel = state.sound ? 'Turn sound off' : 'Turn sound on';
+    $('#sound-button').setAttribute('aria-label', soundLabel);
+    $('#sound-button').title = soundLabel;
+    const soundUse = $('#sound-button use');
+    if (soundUse) soundUse.setAttribute('href', state.sound ? '#i-volume' : '#i-muted');
+  }
   if (!spinning) {
     if (limitReached) {
       announcement.textContent = `${state.winnerLimit.toLocaleString()} ${state.winnerLimit === 1 ? 'winner' : 'winners'} selected for this session. Reset the session or raise the limit in settings.`;
@@ -346,49 +355,62 @@ async function spin() {
   setStageLabel('PREPARING DRAW');
   announcement.textContent = 'Sending signal to the number pads…';
   renderControls();
-  let showedPrelude = false;
-  try { showedPrelude = await playSignalPrelude(); }
-  catch { /* The draw can proceed if the visual sequence is unavailable. */ }
-  finally { preparing = false; stage.classList.remove('is-preparing'); drawPanel.classList.remove('is-preparing'); }
-  if (showedPrelude) {
-    drawPanel.classList.add('is-signal-fading');
-    signalFadeTimer = setTimeout(() => drawPanel.classList.remove('is-signal-fading'), 800);
-  }
-  stage.classList.add('is-spinning');
-  setStageLabel('DRAW IN PROGRESS');
-  announcement.textContent = 'Selecting from the available numbers…';
-  renderControls();
-  const spinStarted = performance.now();
-  tone(95, duration / 1000, .011, 0, 'triangle', 150);
-  const ticks = setInterval(() => {
-    const progress = Math.min(1, (performance.now() - spinStarted) / duration);
-    const pitch = 150 + progress * 190;
-    tone(pitch, .075, .018, 0, 'triangle', pitch * .7);
-  }, 170);
-  const statusTimer = setTimeout(() => {
-    setStageLabel('FINALIZING RESULT');
-    tone(260, .45, .018, 0, 'triangle', 780);
-  }, duration * 0.68);
   try {
-    await Promise.all(strips.map((strip, index) => animateReel(strip, Number(pad(winner)[index]), index, duration)));
-  } catch {
-    // If rendering is interrupted, still reveal the selected result exactly once.
-    displayNumber(winner);
+    let showedPrelude = false;
+    try { showedPrelude = await playSignalPrelude(); }
+    catch (err) { console.error('Signal prelude error:', err); }
+    finally {
+      preparing = false;
+      stage.classList.remove('is-preparing');
+      drawPanel.classList.remove('is-preparing');
+    }
+    if (showedPrelude) {
+      drawPanel.classList.add('is-signal-fading');
+      signalFadeTimer = setTimeout(() => drawPanel.classList.remove('is-signal-fading'), 800);
+    }
+    stage.classList.add('is-spinning');
+    setStageLabel('DRAW IN PROGRESS');
+    announcement.textContent = 'Selecting from the available numbers…';
+    renderControls();
+    const spinStarted = performance.now();
+    tone(95, duration / 1000, .011, 0, 'triangle', 150);
+    const ticks = setInterval(() => {
+      const progress = Math.min(1, (performance.now() - spinStarted) / duration);
+      const pitch = 150 + progress * 190;
+      tone(pitch, .075, .018, 0, 'triangle', pitch * .7);
+    }, 170);
+    const statusTimer = setTimeout(() => {
+      setStageLabel('FINALIZING RESULT');
+      tone(260, .45, .018, 0, 'triangle', 780);
+    }, duration * 0.68);
+    try {
+      await Promise.all(strips.map((strip, index) => animateReel(strip, Number(pad(winner)[index]), index, duration)));
+    } catch {
+      // If rendering is interrupted, still reveal the selected result exactly once.
+      displayNumber(winner);
+    } finally {
+      clearInterval(ticks);
+      clearTimeout(statusTimer);
+    }
+    state.winners.push({ number: winner, at: new Date().toISOString() });
+    stage.classList.remove('is-spinning');
+    stage.classList.add('has-winner');
+    setStageLabel('WINNER SELECTED');
+    announcement.textContent = `Winning number: ${winner}.`;
+    save();
+    renderHistory();
+    playWinnerFanfare();
+    celebrate();
+  } catch (err) {
+    console.error('Spin error:', err);
+    stage.classList.remove('is-spinning', 'is-preparing');
+    drawPanel.classList.remove('is-preparing');
+    toast('Draw encountered an issue. Please try again.');
   } finally {
-    clearInterval(ticks);
-    clearTimeout(statusTimer);
+    spinning = false;
+    preparing = false;
+    renderControls();
   }
-  state.winners.push({ number: winner, at: new Date().toISOString() });
-  spinning = false;
-  stage.classList.remove('is-spinning');
-  stage.classList.add('has-winner');
-  setStageLabel('WINNER SELECTED');
-  announcement.textContent = `Winning number: ${winner}.`;
-  save();
-  renderHistory();
-  renderControls();
-  playWinnerFanfare();
-  celebrate();
 }
 
 function celebrate() {
